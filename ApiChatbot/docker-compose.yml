@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  chatbot-api:
+    build: .
+    container_name: chatbot-api-container
+    ports:
+      - "8012:8012"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    restart: unless-stopped
+    networks:
+      - chatbot-network
+      - tool-network
+
+networks:
+  chatbot-network:
+    name: chatbot-network
+  tool-network:
+    name: tool-network

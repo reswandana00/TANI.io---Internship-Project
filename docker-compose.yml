@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: tani-frontend
+    ports:
+      - "8013:8013"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+    container_name: tani-frontend

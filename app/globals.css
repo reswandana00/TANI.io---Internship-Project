@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme {
+  --color-tea-green: #D8FFB4;
+  --color-tea-green-100: #F4FFE6;
+  --color-tea-green-200: #EEFFDD;
+  --color-tea-green-300: #E6FFD1;
+  --color-tea-green-400: #DFFFC5;
+  --color-tea-green-500: #D8FFB4;
+  --color-tea-green-600: #C2E89A;
+  --color-tea-green-700: #A8CC7F;
+  --color-tea-green-800: #8FB065;
+  --color-tea-green-900: #75944A;
+
+  --color-indigo-dye: #154360;
+  --color-indigo-dye-100: #040d13;
+  --color-indigo-dye-200: #081b26;
+  --color-indigo-dye-300: #0d283a;
+  --color-indigo-dye-400: #11364d;
+  --color-indigo-dye-500: #154360;
+  --color-indigo-dye-600: #2371a1;
+  --color-indigo-dye-700: #3e9bd5;
+  --color-indigo-dye-800: #7ebce3;
+  --color-indigo-dye-900: #bfdef1;
+
+  --color-emerald: #60ce80;
+  --color-emerald-100: #0e2e17;
+  --color-emerald-200: #1c5c2e;
+  --color-emerald-300: #2a8a46;
+  --color-emerald-400: #39b85d;
+  --color-emerald-500: #60ce80;
+  --color-emerald-600: #7fd898;
+  --color-emerald-700: #9fe2b2;
+  --color-emerald-800: #bfebcc;
+  --color-emerald-900: #dff5e5;
+
+  --color-anti-flash-white: #f0f0f0;
+  --color-anti-flash-white-100: #303030;
+  --color-anti-flash-white-200: #606060;
+  --color-anti-flash-white-300: #909090;
+  --color-anti-flash-white-400: #c0c0c0;
+  --color-anti-flash-white-500: #f0f0f0;
+  --color-anti-flash-white-600: #f3f3f3;
+  --color-anti-flash-white-700: #f6f6f6;
+  --color-anti-flash-white-800: #f9f9f9;
+  --color-anti-flash-white-900: #fcfcfc;
+}
+
+/* Custom scrollbar styling */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(13, 40, 58, 0.2) transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: rgba(13, 40, 58, 0.2);
+  border-radius: 3px;
+  transition: background-color 0.2s ease;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(13, 40, 58, 0.4);
+}
+
+/* Smooth scrolling untuk seluruh halaman */
+html {
+  scroll-behavior: smooth;
+}
