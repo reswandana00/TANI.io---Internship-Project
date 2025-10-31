@@ -54,9 +54,9 @@ export default function BarChart() {
 	const fetchData = async () => {
 		setIsLoading(true);
 		try {
-			const response = await fetch(
-				"http://localhost:8011/api/charts/harvest-regions",
-			);
+			const apiUrl =
+				process.env.NEXT_PUBLIC_TOOL_API_URL || "http://10.11.1.207:8011";
+			const response = await fetch(`${apiUrl}/api/charts/harvest-regions`);
 			const result: ApiResponse = await response.json();
 
 			if (result.success && result.data) {

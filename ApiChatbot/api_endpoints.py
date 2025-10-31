@@ -18,12 +18,23 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Add CORS middleware
+# Add CORS middleware with comprehensive origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this properly for production
+    allow_origins=[
+        "http://localhost:8013",
+        "http://10.11.1.207:8013",
+        "http://localhost:3000",
+        "http://10.11.1.207:3000",
+        "http://localhost",
+        "http://10.11.1.207",
+        "https://10.11.1.207",
+        "http://127.0.0.1:8013",
+        "http://127.0.0.1:3000",
+        "*"  # Allow all for development
+    ],
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -59,13 +70,16 @@ async def health_check():
 async def chat(request: ChatRequest):
     """Chat with the agricultural chatbot."""
     try:
+        print(f"Received chat request: {request.message}")
         response = get_chat_response(request.message)
+        print(f"Generated response: {response[:100]}...")
         return ApiResponse(
             success=True,
             data={"response": response},
             message="Chat response generated successfully"
         )
     except Exception as e:
+        print(f"Error in chat endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # Additional endpoint for simple GET requests

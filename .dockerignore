@@ -29,6 +29,8 @@ venv/
 
 # Database stuff (backend - diabaikan)
 docker_stuff/
+ApiDB/pgdata/
+ApiDB/pgdata/*
 
 # Development files
 README.md

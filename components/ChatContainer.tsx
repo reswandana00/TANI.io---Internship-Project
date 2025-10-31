@@ -92,7 +92,13 @@ function ChatContainer() {
 
 		try {
 			// Kirim pesan ke backend
-			const response = await fetch("http://localhost:8012/api/chat", {
+			const apiUrl =
+				process.env.NEXT_PUBLIC_CHATBOT_API_URL || "http://10.11.1.207:8012";
+
+			console.log("Sending request to:", apiUrl);
+			console.log("Message:", currentInput);
+
+			const response = await fetch(`${apiUrl}/api/chat`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -100,11 +106,19 @@ function ChatContainer() {
 				body: JSON.stringify({ message: currentInput }),
 			});
 
+			console.log("Response status:", response.status);
+			console.log("Response ok:", response.ok);
+
 			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
+				const errorText = await response.text();
+				console.error("Error response:", errorText);
+				throw new Error(
+					`HTTP error! status: ${response.status} - ${errorText}`,
+				);
 			}
 
 			const data = await response.json();
+			console.log("Response data:", data);
 
 			// Hapus pesan loading dan tambahkan respons bot
 			setMessages((prev) => {

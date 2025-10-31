@@ -43,9 +43,23 @@ export default function PolarChart() {
 	const fetchData = async () => {
 		setIsLoading(true);
 		try {
+			const apiUrl =
+				process.env.NEXT_PUBLIC_TOOL_API_URL || "http://10.11.1.207:8011";
 			const response = await fetch(
-				"http://localhost:8011/api/charts/machinery-effectiveness",
+				`${apiUrl}/api/charts/machinery-effectiveness`,
+				{
+					method: "GET",
+					headers: {
+						Accept: "application/json",
+						"Content-Type": "application/json",
+					},
+				},
 			);
+
+			if (!response.ok) {
+				throw new Error(`HTTP error! status: ${response.status}`);
+			}
+
 			const result: ApiResponse = await response.json();
 
 			if (result.success && result.data) {
@@ -94,9 +108,11 @@ export default function PolarChart() {
 						},
 					],
 				});
+			} else {
+				console.error("GraphFour: API returned unsuccessful or no data");
 			}
 		} catch (error) {
-			console.error("Error fetching data:", error);
+			console.error("GraphFour: Error fetching data:", error);
 			// Keep empty data if API fails
 			setChartData({
 				labels: [],

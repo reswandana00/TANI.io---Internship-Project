@@ -18,7 +18,7 @@ from IPython.display import Image, display
 load_dotenv()
 
 # Configuration
-base_url = os.getenv("API_TOOL_URL", "http://tool-api-container:8011")
+base_url = os.getenv("TOOL_API_URL", "http://tool-api:8011")
 
 import nest_asyncio
 nest_asyncio.apply()

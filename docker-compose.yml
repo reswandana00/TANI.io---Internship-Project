@@ -1,14 +1,122 @@
 version: '3.8'
 
 services:
+  # Database Service
+  database:
+    image: postgres:16
+    container_name: tani-database
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: tani
+      POSTGRES_DB: tani_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./ApiDB/pgdata:/var/lib/postgresql/data
+      - ./ApiDB/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - tani-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d tani_db"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Database Admin Interface
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: tani-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    networks:
+      - tani-network
+    depends_on:
+      database:
+        condition: service_healthy
+
+  # Tool API Service
+  tool-api:
+    build:
+      context: ./ApiTool
+      dockerfile: Dockerfile
+    container_name: tani-tool-api
+    restart: unless-stopped
+    ports:
+      - "8011:8011"
+    environment:
+      - DATABASE_URL=postgresql://dev:tani@database:5432/tani_db
+    volumes:
+      - ./ApiTool:/app
+    networks:
+      - tani-network
+    depends_on:
+      database:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8011/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Chatbot API Service
+  chatbot-api:
+    build:
+      context: ./ApiChatbot
+      dockerfile: Dockerfile
+    container_name: tani-chatbot-api
+    restart: unless-stopped
+    ports:
+      - "8012:8012"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - TOOL_API_URL=${TOOL_API_URL}
+      - DATABASE_URL=postgresql://dev:tani@database:5432/tani_db
+    volumes:
+      - ./ApiChatbot:/app
+    networks:
+      - tani-network
+    depends_on:
+      tool-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8012/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Service
   frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
-    image: tani-frontend
+      args:
+        NEXT_PUBLIC_CHATBOT_API_URL: ${NEXT_PUBLIC_CHATBOT_API_URL:-http://10.11.1.207:8012}
+        NEXT_PUBLIC_TOOL_API_URL: ${NEXT_PUBLIC_TOOL_API_URL:-http://10.11.1.207:8011}
+    container_name: tani-frontend
+    restart: unless-stopped
     ports:
       - "8013:8013"
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
-    container_name: tani-frontend
+      - NEXT_PUBLIC_CHATBOT_API_URL=${NEXT_PUBLIC_CHATBOT_API_URL:-http://10.11.1.207:8012}
+      - NEXT_PUBLIC_TOOL_API_URL=${NEXT_PUBLIC_TOOL_API_URL:-http://10.11.1.207:8011}
+    networks:
+      - tani-network
+    depends_on:
+      chatbot-api:
+        condition: service_healthy
+
+networks:
+  tani-network:
+    name: tani-network
+    driver: bridge
+
+volumes:
+  postgres-data:
+    name: tani-postgres-data

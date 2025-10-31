@@ -38,9 +38,9 @@ function GraphFive() {
 	const fetchData = async () => {
 		setIsLoading(true);
 		try {
-			const response = await fetch(
-				"http://localhost:8011/api/charts/general-data",
-			);
+			const apiUrl =
+				process.env.NEXT_PUBLIC_TOOL_API_URL || "http://10.11.1.207:8011";
+			const response = await fetch(`${apiUrl}/api/charts/general-data`);
 			const result: ApiResponse = await response.json();
 
 			if (result.success && result.data) {

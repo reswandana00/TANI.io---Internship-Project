@@ -1,0 +1,22 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies
+RUN pip install pandas sqlalchemy psycopg2-binary
+
+# Copy the database script
+COPY insert_data.py .
+COPY Latest/ ./Latest/
+
+# Set environment variables
+ENV DATABASE_URL=postgresql://dev:tani@database:5432/tani_db
+ENV PYTHONUNBUFFERED=1
+
+# Run the database insertion script
+CMD ["python", "insert_data.py"]

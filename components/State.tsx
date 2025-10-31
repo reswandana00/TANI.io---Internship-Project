@@ -27,11 +27,11 @@ function State({ region }: { region?: string }) {
 	const fetchParentData = async () => {
 		setIsLoading(true);
 		try {
+			const apiUrl =
+				process.env.NEXT_PUBLIC_TOOL_API_URL || "http://10.11.1.207:8011";
 			const url = region
-				? `http://localhost:8011/api/data/parent?region=${encodeURIComponent(
-						region,
-				  )}`
-				: "http://localhost:8011/api/data/parent";
+				? `${apiUrl}/api/data/parent?region=${encodeURIComponent(region)}`
+				: `${apiUrl}/api/data/parent`;
 
 			const response = await fetch(url);
 			const result: ApiResponse = await response.json();
